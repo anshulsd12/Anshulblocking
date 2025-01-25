@@ -39,7 +39,7 @@
             <input type="radio" name="youtube-consent" value="no" checked> No
           </label>
         </div>
-        <!-- Consent for image -->
+        <!-- Consent for Image -->
         <div style="margin-bottom: 15px;">
           <p>Image:</p>
           <label>
@@ -47,6 +47,16 @@
           </label>
           <label>
             <input type="radio" name="image-consent" value="no" checked> No
+          </label>
+        </div>
+        <!-- Consent for Twitter Like Button -->
+        <div style="margin-bottom: 15px;">
+          <p>Twitter Like Button:</p>
+          <label>
+            <input type="radio" name="twitter-consent" value="yes"> Yes
+          </label>
+          <label>
+            <input type="radio" name="twitter-consent" value="no" checked> No
           </label>
         </div>
       </div>
@@ -68,6 +78,7 @@
     // Get consent values
     const youtubeConsent = document.querySelector('input[name="youtube-consent"]:checked').value;
     const imageConsent = document.querySelector('input[name="image-consent"]:checked').value;
+    const twitterConsent = document.querySelector('input[name="twitter-consent"]:checked').value;
 
     // Show or hide the YouTube video based on consent
     const youtubeVideo = document.getElementById("youtube-video");
@@ -81,6 +92,12 @@
       image.style.display = imageConsent === "yes" ? "block" : "none";
     }
 
+    // Show or hide the Twitter Like button based on consent
+    const twitterLikeButton = document.querySelector('.twitter-like-button');
+    if (twitterLikeButton) {
+      twitterLikeButton.style.display = twitterConsent === "yes" ? "inline-block" : "none";
+    }
+
     // Remove the popup
     const overlay = document.getElementById("popup-overlay");
     if (overlay) overlay.remove();
@@ -91,9 +108,11 @@
     // Initially hide the content
     const youtubeVideo = document.getElementById("youtube-video");
     const image = document.getElementById("image");
+    const twitterLikeButton = document.querySelector('.twitter-like-button');
 
     if (youtubeVideo) youtubeVideo.style.display = "none";
     if (image) image.style.display = "none";
+    if (twitterLikeButton) twitterLikeButton.style.display = "none";
 
     // Create and show the popup
     createPopup();
