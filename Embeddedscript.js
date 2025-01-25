@@ -81,21 +81,46 @@
     const twitterConsent = document.querySelector('input[name="twitter-consent"]:checked').value;
 
     // Show or hide the YouTube video based on consent
-    const youtubeVideo = document.getElementById("youtube-video");
-    if (youtubeVideo) {
-      youtubeVideo.style.display = youtubeConsent === "yes" ? "block" : "none";
+    const youtubeVideoPlaceholder = document.getElementById("youtube-video-placeholder");
+    if (youtubeVideoPlaceholder && youtubeConsent === "yes") {
+      const youtubeVideo = document.createElement("iframe");
+      youtubeVideo.id = "youtube-video";
+      youtubeVideo.width = "560";
+      youtubeVideo.height = "315";
+      youtubeVideo.src = "https://www.youtube.com/embed/oDNAsOnfZ-Q";
+      youtubeVideo.title = "YouTube video";
+      youtubeVideo.frameborder = "0";
+      youtubeVideo.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture";
+      youtubeVideo.allowfullscreen = true;
+      youtubeVideoPlaceholder.replaceWith(youtubeVideo); // Replace placeholder with iframe
+    } else if (youtubeVideoPlaceholder) {
+      youtubeVideoPlaceholder.remove(); // Remove placeholder if no consent
     }
 
     // Show or hide the image based on consent
-    const image = document.getElementById("image");
-    if (image) {
-      image.style.display = imageConsent === "yes" ? "block" : "none";
+    const imagePlaceholder = document.getElementById("image-placeholder");
+    if (imagePlaceholder && imageConsent === "yes") {
+      const image = document.createElement("img");
+      image.id = "image";
+      image.src = "https://www.tama.com/common/product_artist_file/file/pen_Starclassic2023.webp";
+      image.alt = "Drums Image";
+      imagePlaceholder.replaceWith(image); // Replace placeholder with image
+    } else if (imagePlaceholder) {
+      imagePlaceholder.remove(); // Remove placeholder if no consent
     }
 
     // Show or hide the Twitter Like button based on consent
-    const twitterLikeButton = document.querySelector('.twitter-like-button');
-    if (twitterLikeButton) {
-      twitterLikeButton.style.display = twitterConsent === "yes" ? "inline-block" : "none";
+    const twitterLikeButtonPlaceholder = document.getElementById("twitter-like-button-placeholder");
+    if (twitterLikeButtonPlaceholder && twitterConsent === "yes") {
+      const twitterLikeButton = document.createElement("a");
+      twitterLikeButton.href = "https://twitter.com/intent/like?tweet_id=1234567890";
+      twitterLikeButton.classList.add("twitter-like-button");
+      twitterLikeButton.setAttribute("data-show-count", "true");
+      twitterLikeButton.setAttribute("data-size", "large");
+      twitterLikeButton.innerText = "Like";
+      twitterLikeButtonPlaceholder.replaceWith(twitterLikeButton); // Replace placeholder with like button
+    } else if (twitterLikeButtonPlaceholder) {
+      twitterLikeButtonPlaceholder.remove(); // Remove placeholder if no consent
     }
 
     // Remove the popup
@@ -105,14 +130,25 @@
 
   // Initialize the popup on page load
   document.addEventListener("DOMContentLoaded", () => {
-    // Initially hide the content
-    const youtubeVideo = document.getElementById("youtube-video");
-    const image = document.getElementById("image");
-    const twitterLikeButton = document.querySelector('.twitter-like-button');
+    // Initially hide the content by using placeholders
+    const contentDiv = document.getElementById("content");
 
-    if (youtubeVideo) youtubeVideo.style.display = "none";
-    if (image) image.style.display = "none";
-    if (twitterLikeButton) twitterLikeButton.style.display = "none";
+    contentDiv.innerHTML = `
+      <!-- YouTube Video Placeholder -->
+      <div id="youtube-video-placeholder" style="width: 560px; height: 315px; background: #f0f0f0; text-align: center; line-height: 315px; color: #ccc;">
+        YouTube Video Placeholder (Consent Required)
+      </div>
+
+      <!-- Image Placeholder -->
+      <div id="image-placeholder" style="width: 300px; height: 200px; background: #f0f0f0; text-align: center; line-height: 200px; color: #ccc;">
+        Image Placeholder (Consent Required)
+      </div>
+
+      <!-- Twitter Like Button Placeholder -->
+      <div id="twitter-like-button-placeholder" style="width: 150px; height: 40px; background: #f0f0f0; text-align: center; line-height: 40px; color: #ccc;">
+        Twitter Like Button Placeholder (Consent Required)
+      </div>
+    `;
 
     // Create and show the popup
     createPopup();
