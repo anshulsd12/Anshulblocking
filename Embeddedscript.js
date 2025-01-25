@@ -1,9 +1,9 @@
 (function () {
-  // Function to create and display the popup
-  function createPopup() {
+  // Function to create and display a popup for specific content
+  function createPopup(contentType, onAllow, onBlock) {
     // Create overlay
     const overlay = document.createElement("div");
-    overlay.id = "popup-overlay";
+    overlay.className = "popup-overlay";
     overlay.style.position = "fixed";
     overlay.style.top = 0;
     overlay.style.left = 0;
@@ -19,7 +19,7 @@
 
     // Create popup box
     const popup = document.createElement("div");
-    popup.id = "popup";
+    popup.className = "popup";
     popup.style.backgroundColor = "#333";
     popup.style.padding = "20px";
     popup.style.borderRadius = "10px";
@@ -27,10 +27,10 @@
     popup.style.boxShadow = "0 4px 15px rgba(0, 0, 0, 0.2)";
     popup.innerHTML = `
       <h2 style="margin-bottom: 10px;">Consent Required</h2>
-      <p>Would you like to view the content on this page?</p>
+      <p>Would you like to view the ${contentType}?</p>
       <div style="margin-top: 20px;">
-        <button id="allow-content" style="padding: 10px 20px; margin-right: 10px; background-color: #4CAF50; color: white; border: none; border-radius: 5px; cursor: pointer;">Yes</button>
-        <button id="block-content" style="padding: 10px 20px; background-color: #f44336; color: white; border: none; border-radius: 5px; cursor: pointer;">No</button>
+        <button id="allow-${contentType}" style="padding: 10px 20px; margin-right: 10px; background-color: #4CAF50; color: white; border: none; border-radius: 5px; cursor: pointer;">Yes</button>
+        <button id="block-${contentType}" style="padding: 10px 20px; background-color: #f44336; color: white; border: none; border-radius: 5px; cursor: pointer;">No</button>
       </div>
     `;
 
@@ -41,50 +41,66 @@
     document.body.appendChild(overlay);
 
     // Add event listeners for buttons
-    document.getElementById("allow-content").addEventListener("click", () => {
-      allowContent();
-      closePopup();
+    document.getElementById(`allow-${contentType}`).addEventListener("click", () => {
+      onAllow();
+      closePopup(overlay);
     });
 
-    document.getElementById("block-content").addEventListener("click", () => {
-      blockContent();
-      closePopup();
+    document.getElementById(`block-${contentType}`).addEventListener("click", () => {
+      onBlock();
+      closePopup(overlay);
     });
   }
 
   // Function to close the popup
-  function closePopup() {
-    const overlay = document.getElementById("popup-overlay");
+  function closePopup(overlay) {
     if (overlay) {
       overlay.remove();
     }
   }
 
-  // Function to allow content
-  function allowContent() {
-    const content = document.getElementById("content");
-    if (content) {
-      content.style.display = "block"; // Show the content
-    }
-  }
-
-  // Function to block content
-  function blockContent() {
+  // Function to initialize the consent logic
+  function initializeConsent() {
     const youtubeVideo = document.getElementById("youtube-video");
     const image = document.getElementById("image");
-    if (youtubeVideo) youtubeVideo.remove(); // Remove the YouTube iframe
-    if (image) image.remove(); // Remove the image
-  }
 
-  // Check if popup needs to be displayed
-  document.addEventListener("DOMContentLoaded", () => {
-    // Initially hide the content
-    const content = document.getElementById("content");
-    if (content) {
-      content.style.display = "none";
+    // Ask for consent for YouTube video
+    if (youtubeVideo) {
+      createPopup(
+        "YouTube video",
+        () => {
+          youtubeVideo.style.display = "block"; // Show the video
+        },
+        () => {
+          youtubeVideo.remove(); // Remove the video
+        }
+      );
     }
 
-    // Create and show the popup
-    createPopup();
+    // Ask for consent for Image
+    if (image) {
+      createPopup(
+        "image",
+        () => {
+          image.style.display = "block"; // Show the image
+        },
+        () => {
+          image.remove(); // Remove the image
+        }
+      );
+    }
+  }
+
+  // Check if consent logic needs to be initialized
+  document.addEventListener("DOMContentLoaded", () => {
+    // Initially hide both the image and video
+    const youtubeVideo = document.getElementById("youtube-video");
+    const image = document.getElementById("image");
+
+    if (youtubeVideo) youtubeVideo.style.display = "none";
+    if (image) image.style.display = "none";
+
+    // Initialize the consent process
+    initializeConsent();
   });
 })();
