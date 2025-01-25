@@ -1,94 +1,90 @@
-<script>
-    (function() {
-        // Function to create and display the popup
-        function createPopup() {
-            const overlay = document.createElement('div');
-            overlay.id = 'overlay';
-            overlay.style.position = 'fixed';
-            overlay.style.top = '0';
-            overlay.style.left = '0';
-            overlay.style.width = '100%';
-            overlay.style.height = '100%';
-            overlay.style.background = 'rgba(0, 0, 0, 0.5)';
-            overlay.style.zIndex = '999';
-            document.body.appendChild(overlay);
+(function () {
+  // Function to create and display the popup
+  function createPopup() {
+    // Create overlay
+    const overlay = document.createElement("div");
+    overlay.id = "popup-overlay";
+    overlay.style.position = "fixed";
+    overlay.style.top = 0;
+    overlay.style.left = 0;
+    overlay.style.width = "100vw";
+    overlay.style.height = "100vh";
+    overlay.style.backgroundColor = "rgba(0, 0, 0, 0.7)";
+    overlay.style.zIndex = 1000;
+    overlay.style.display = "flex";
+    overlay.style.justifyContent = "center";
+    overlay.style.alignItems = "center";
+    overlay.style.color = "#fff";
+    overlay.style.fontFamily = "Arial, sans-serif";
 
-            const popup = document.createElement('div');
-            popup.id = 'popup';
-            popup.style.position = 'fixed';
-            popup.style.top = '50%';
-            popup.style.left = '50%';
-            popup.style.transform = 'translate(-50%, -50%)';
-            popup.style.background = '#fff';
-            popup.style.padding = '20px';
-            popup.style.boxShadow = '0 4px 8px rgba(0, 0, 0, 0.3)';
-            popup.style.borderRadius = '8px';
-            popup.style.textAlign = 'center';
-            popup.style.zIndex = '1000';
-            popup.innerHTML = `
-                <p>Which content would you like to allow?</p>
-                <button id="allowVideo">Allow YouTube Video</button>
-                <button id="allowImage">Allow Image</button>
-                <button id="allowBoth">Allow Both</button>
-            `;
-            document.body.appendChild(popup);
+    // Create popup box
+    const popup = document.createElement("div");
+    popup.id = "popup";
+    popup.style.backgroundColor = "#333";
+    popup.style.padding = "20px";
+    popup.style.borderRadius = "10px";
+    popup.style.textAlign = "center";
+    popup.style.boxShadow = "0 4px 15px rgba(0, 0, 0, 0.2)";
+    popup.innerHTML = `
+      <h2 style="margin-bottom: 10px;">Consent Required</h2>
+      <p>Would you like to view the content on this page?</p>
+      <div style="margin-top: 20px;">
+        <button id="allow-content" style="padding: 10px 20px; margin-right: 10px; background-color: #4CAF50; color: white; border: none; border-radius: 5px; cursor: pointer;">Yes</button>
+        <button id="block-content" style="padding: 10px 20px; background-color: #f44336; color: white; border: none; border-radius: 5px; cursor: pointer;">No</button>
+      </div>
+    `;
 
-            // Add event listeners for the buttons
-            document.getElementById('allowVideo').addEventListener('click', function() {
-                loadContent('video');
-                closePopup();
-            });
-            document.getElementById('allowImage').addEventListener('click', function() {
-                loadContent('image');
-                closePopup();
-            });
-            document.getElementById('allowBoth').addEventListener('click', function() {
-                loadContent('both');
-                closePopup();
-            });
-        }
+    // Append popup to overlay
+    overlay.appendChild(popup);
 
-        // Function to dynamically load the content based on user's choice
-        function loadContent(choice) {
-            const contentDiv = document.createElement('div');
-            contentDiv.id = 'content';
+    // Append overlay to body
+    document.body.appendChild(overlay);
 
-            if (choice === 'video' || choice === 'both') {
-                const iframe = document.createElement('iframe');
-                iframe.width = '560';
-                iframe.height = '315';
-                iframe.src = 'https://www.youtube.com/embed/oDNAsOnfZ-Q';
-                iframe.title = 'YouTube video player';
-                iframe.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture';
-                iframe.allowFullscreen = true;
-                contentDiv.appendChild(iframe);
-            }
+    // Add event listeners for buttons
+    document.getElementById("allow-content").addEventListener("click", () => {
+      allowContent();
+      closePopup();
+    });
 
-            if (choice === 'image' || choice === 'both') {
-                const img = document.createElement('img');
-                img.src = 'https://www.tama.com/common/product_artist_file/file/pen_Starclassic2023.webp';
-                img.alt = 'Starclassic 2023';
-                img.style.maxWidth = '100%';
-                img.style.height = 'auto';
-                img.style.marginTop = '20px';
-                img.style.border = '2px solid #ccc';
-                img.style.boxShadow = '0 4px 8px rgba(0, 0, 0, 0.2)';
-                contentDiv.appendChild(img);
-            }
+    document.getElementById("block-content").addEventListener("click", () => {
+      blockContent();
+      closePopup();
+    });
+  }
 
-            // Append the dynamically created content to the body
-            document.body.appendChild(contentDiv);
-        }
+  // Function to close the popup
+  function closePopup() {
+    const overlay = document.getElementById("popup-overlay");
+    if (overlay) {
+      overlay.remove();
+    }
+  }
 
-        // Function to close the popup and overlay
-        function closePopup() {
-            document.getElementById('popup').style.display = 'none';
-            document.getElementById('overlay').style.display = 'none';
-        }
+  // Function to allow content
+  function allowContent() {
+    const content = document.getElementById("content");
+    if (content) {
+      content.style.display = "block"; // Show the content
+    }
+  }
 
-        // Initialize the popup when the page loads
-        window.onload = function() {
-            createPopup();
-        };
-    })();
-</script>
+  // Function to block content
+  function blockContent() {
+    const youtubeVideo = document.getElementById("youtube-video");
+    const image = document.getElementById("image");
+    if (youtubeVideo) youtubeVideo.remove(); // Remove the YouTube iframe
+    if (image) image.remove(); // Remove the image
+  }
+
+  // Check if popup needs to be displayed
+  document.addEventListener("DOMContentLoaded", () => {
+    // Initially hide the content
+    const content = document.getElementById("content");
+    if (content) {
+      content.style.display = "none";
+    }
+
+    // Create and show the popup
+    createPopup();
+  });
+})();
