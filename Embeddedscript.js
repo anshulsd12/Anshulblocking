@@ -1,5 +1,5 @@
 (function () {
-  // Function to create and display a single popup for both content types
+  // Function to create and display the Cookie Manager popup
   function createPopup() {
     // Create overlay
     const overlay = document.createElement("div");
@@ -26,22 +26,31 @@
     popup.style.textAlign = "center";
     popup.style.boxShadow = "0 4px 15px rgba(0, 0, 0, 0.2)";
     popup.innerHTML = `
-      <h2 style="margin-bottom: 10px;">Consent Required</h2>
-      <p>Please provide your consent for the following content:</p>
-      <div style="margin-top: 20px;">
+      <h2 style="margin-bottom: 10px;">Cookie Manager</h2>
+      <p>Manage your consent for the following content:</p>
+      <div style="margin-top: 20px; text-align: left;">
         <!-- Consent for YouTube video -->
         <div style="margin-bottom: 15px;">
-          <p>Do you want to view the YouTube video?</p>
-          <button id="allow-youtube" style="padding: 10px 20px; margin-right: 10px; background-color: #4CAF50; color: white; border: none; border-radius: 5px; cursor: pointer;">Yes</button>
-          <button id="block-youtube" style="padding: 10px 20px; background-color: #f44336; color: white; border: none; border-radius: 5px; cursor: pointer;">No</button>
+          <p>YouTube:</p>
+          <label>
+            <input type="radio" name="youtube-consent" value="yes"> Yes
+          </label>
+          <label>
+            <input type="radio" name="youtube-consent" value="no" checked> No
+          </label>
         </div>
         <!-- Consent for image -->
-        <div>
-          <p>Do you want to view the image?</p>
-          <button id="allow-image" style="padding: 10px 20px; margin-right: 10px; background-color: #4CAF50; color: white; border: none; border-radius: 5px; cursor: pointer;">Yes</button>
-          <button id="block-image" style="padding: 10px 20px; background-color: #f44336; color: white; border: none; border-radius: 5px; cursor: pointer;">No</button>
+        <div style="margin-bottom: 15px;">
+          <p>Image:</p>
+          <label>
+            <input type="radio" name="image-consent" value="yes"> Yes
+          </label>
+          <label>
+            <input type="radio" name="image-consent" value="no" checked> No
+          </label>
         </div>
       </div>
+      <button id="save-consent" style="padding: 10px 20px; margin-top: 20px; background-color: #4CAF50; color: white; border: none; border-radius: 5px; cursor: pointer;">Save Consent</button>
     `;
 
     // Append popup to overlay
@@ -50,60 +59,34 @@
     // Append overlay to body
     document.body.appendChild(overlay);
 
-    // Add event listeners for YouTube video buttons
-    document.getElementById("allow-youtube").addEventListener("click", () => {
-      allowContent("youtube-video");
-    });
-
-    document.getElementById("block-youtube").addEventListener("click", () => {
-      blockContent("youtube-video");
-    });
-
-    // Add event listeners for image buttons
-    document.getElementById("allow-image").addEventListener("click", () => {
-      allowContent("image");
-    });
-
-    document.getElementById("block-image").addEventListener("click", () => {
-      blockContent("image");
-    });
+    // Add event listener for the Save Consent button
+    document.getElementById("save-consent").addEventListener("click", saveConsent);
   }
 
-  // Function to allow content
-  function allowContent(contentId) {
-    const content = document.getElementById(contentId);
-    if (content) {
-      content.style.display = "block"; // Show the content
+  // Function to save consent and apply it to the content
+  function saveConsent() {
+    // Get consent values
+    const youtubeConsent = document.querySelector('input[name="youtube-consent"]:checked').value;
+    const imageConsent = document.querySelector('input[name="image-consent"]:checked').value;
+
+    // Show or hide the YouTube video based on consent
+    const youtubeVideo = document.getElementById("youtube-video");
+    if (youtubeVideo) {
+      youtubeVideo.style.display = youtubeConsent === "yes" ? "block" : "none";
     }
-    checkAllConsentGiven();
-  }
 
-  // Function to block content
-  function blockContent(contentId) {
-    const content = document.getElementById(contentId);
-    if (content) {
-      content.remove(); // Remove the content
+    // Show or hide the image based on consent
+    const image = document.getElementById("image");
+    if (image) {
+      image.style.display = imageConsent === "yes" ? "block" : "none";
     }
-    checkAllConsentGiven();
+
+    // Remove the popup
+    const overlay = document.getElementById("popup-overlay");
+    if (overlay) overlay.remove();
   }
 
-  // Function to check if all consent decisions have been made
-  function checkAllConsentGiven() {
-    const youtubeDecisionMade =
-      document.getElementById("allow-youtube") === null &&
-      document.getElementById("block-youtube") === null;
-    const imageDecisionMade =
-      document.getElementById("allow-image") === null &&
-      document.getElementById("block-image") === null;
-
-    // If decisions for both content types are made, close the popup
-    if (youtubeDecisionMade && imageDecisionMade) {
-      const overlay = document.getElementById("popup-overlay");
-      if (overlay) overlay.remove();
-    }
-  }
-
-  // Check if popup needs to be displayed
+  // Initialize the popup on page load
   document.addEventListener("DOMContentLoaded", () => {
     // Initially hide the content
     const youtubeVideo = document.getElementById("youtube-video");
