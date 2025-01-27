@@ -173,14 +173,32 @@ document.addEventListener("DOMContentLoaded", function () {
     <p>Please provide your consent for the following:</p>
     <div>
       <label>
+        <input type="checkbox" id="consent-youtube">
+        Consent for YouTube Video
+      </label>
+    </div>
+    <div>
+      <label>
+        <input type="checkbox" id="consent-image">
+        Consent for Image
+      </label>
+    </div>
+    <div>
+      <label>
+        <input type="checkbox" id="consent-twitter">
+        Consent for Twitter Like Button
+      </label>
+    </div>
+    <div>
+      <label>
         <input type="checkbox" id="consent-pair-1">
-        Consent for Scripts 1 & 2
+        Consent for Scripts 1 & 2 (iZooto)
       </label>
     </div>
     <div>
       <label>
         <input type="checkbox" id="consent-pair-2">
-        Consent for Scripts 3 & 4
+        Consent for Scripts 3 & 4 (iZooto)
       </label>
     </div>
     <button id="consent-submit">Save</button>
@@ -190,22 +208,36 @@ document.addEventListener("DOMContentLoaded", function () {
 
   // Handle consent submission
   document.getElementById("consent-submit").addEventListener("click", function () {
+    const consentYouTube = document.getElementById("consent-youtube").checked;
+    const consentImage = document.getElementById("consent-image").checked;
+    const consentTwitter = document.getElementById("consent-twitter").checked;
     const consentPair1 = document.getElementById("consent-pair-1").checked;
     const consentPair2 = document.getElementById("consent-pair-2").checked;
 
     // Save consent to localStorage
+    localStorage.setItem("consentYouTube", consentYouTube);
+    localStorage.setItem("consentImage", consentImage);
+    localStorage.setItem("consentTwitter", consentTwitter);
     localStorage.setItem("consentPair1", consentPair1);
     localStorage.setItem("consentPair2", consentPair2);
 
     // Remove the popup
     popup.remove();
 
-    // Load scripts based on consent
+    // Load content and scripts based on consent
+    if (consentYouTube) {
+      loadYouTubeVideo();
+    }
+    if (consentImage) {
+      loadImage();
+    }
+    if (consentTwitter) {
+      loadTwitterButton();
+    }
     if (consentPair1) {
-      loadScript("https://cdn.izooto.com/scripts/sdk/izooto.js", "izootoSdk");
+      loadScript("https://cdn.izooto.com/scripts/sdk/izooto.js", "izootoSdk1");
       loadIframe("https://cdn.izooto.com/scripts/sak/iz_setcid.html?v=1", "izsetcgid");
     }
-
     if (consentPair2) {
       loadScript("https://cdn.izooto.com/scripts/11212a076a9bffdc30d9fad44a7ba74b4c6259ff.js");
       loadScript("https://cdn.izooto.com/scripts/sdk/izooto.js", "izootoSdk2");
@@ -235,15 +267,56 @@ document.addEventListener("DOMContentLoaded", function () {
     document.body.appendChild(iframe);
   }
 
+  // Utility function to load the YouTube video
+  function loadYouTubeVideo() {
+    const placeholder = document.getElementById("youtube-video-placeholder");
+    placeholder.innerHTML = `
+      <iframe width="560" height="315" 
+        src="https://www.youtube.com/embed/oDNAsOnfZ-Q" 
+        title="YouTube video player" frameborder="0" 
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+        allowfullscreen></iframe>
+    `;
+  }
+
+  // Utility function to load the image
+  function loadImage() {
+    const placeholder = document.getElementById("image-placeholder");
+    placeholder.innerHTML = `
+      <img src="https://www.tama.com/common/product_artist_file/file/pen_Starclassic2023.webp" alt="Example Image" width="300">
+    `;
+  }
+
+  // Utility function to load the Twitter like button
+  function loadTwitterButton() {
+    const placeholder = document.getElementById("twitter-like-button-placeholder");
+    placeholder.innerHTML = `
+      <a href="https://twitter.com/intent/like?tweet_id=123456789" target="_blank">
+        <img src="https://abs.twimg.com/icons/apple-touch-icon-192x192.png" alt="Twitter Like Button" width="40">
+      </a>
+    `;
+  }
+
   // Check saved consent on page load
+  const savedConsentYouTube = localStorage.getItem("consentYouTube") === "true";
+  const savedConsentImage = localStorage.getItem("consentImage") === "true";
+  const savedConsentTwitter = localStorage.getItem("consentTwitter") === "true";
   const savedConsentPair1 = localStorage.getItem("consentPair1") === "true";
   const savedConsentPair2 = localStorage.getItem("consentPair2") === "true";
 
+  if (savedConsentYouTube) {
+    loadYouTubeVideo();
+  }
+  if (savedConsentImage) {
+    loadImage();
+  }
+  if (savedConsentTwitter) {
+    loadTwitterButton();
+  }
   if (savedConsentPair1) {
-    loadScript("https://cdn.izooto.com/scripts/sdk/izooto.js", "izootoSdk");
+    loadScript("https://cdn.izooto.com/scripts/sdk/izooto.js", "izootoSdk1");
     loadIframe("https://cdn.izooto.com/scripts/sak/iz_setcid.html?v=1", "izsetcgid");
   }
-
   if (savedConsentPair2) {
     loadScript("https://cdn.izooto.com/scripts/11212a076a9bffdc30d9fad44a7ba74b4c6259ff.js");
     loadScript("https://cdn.izooto.com/scripts/sdk/izooto.js", "izootoSdk2");
