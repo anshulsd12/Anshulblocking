@@ -83,6 +83,14 @@
     document.getElementById("save-consent").addEventListener("click", saveConsent);
   }
 
+  // Function to dynamically load a script
+  function loadScript(src) {
+    const script = document.createElement("script");
+    script.src = src;
+    script.async = true;
+    document.body.appendChild(script);
+  }
+
   // Function to save consent and apply it to the content
   function saveConsent() {
     // Get consent values
@@ -103,9 +111,9 @@
       youtubeVideo.frameborder = "0";
       youtubeVideo.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture";
       youtubeVideo.allowfullscreen = true;
-      youtubeVideoPlaceholder.replaceWith(youtubeVideo); // Replace placeholder with iframe
+      youtubeVideoPlaceholder.replaceWith(youtubeVideo);
     } else if (youtubeVideoPlaceholder) {
-      youtubeVideoPlaceholder.remove(); // Remove placeholder if no consent
+      youtubeVideoPlaceholder.remove();
     }
 
     // Show or hide the image based on consent
@@ -115,9 +123,9 @@
       image.id = "image";
       image.src = "https://www.tama.com/common/product_artist_file/file/pen_Starclassic2023.webp";
       image.alt = "Drums Image";
-      imagePlaceholder.replaceWith(image); // Replace placeholder with image
+      imagePlaceholder.replaceWith(image);
     } else if (imagePlaceholder) {
-      imagePlaceholder.remove(); // Remove placeholder if no consent
+      imagePlaceholder.remove();
     }
 
     // Show or hide the Twitter Like button based on consent
@@ -129,17 +137,14 @@
       twitterLikeButton.setAttribute("data-show-count", "true");
       twitterLikeButton.setAttribute("data-size", "large");
       twitterLikeButton.innerText = "Like";
-      twitterLikeButtonPlaceholder.replaceWith(twitterLikeButton); // Replace placeholder with like button
+      twitterLikeButtonPlaceholder.replaceWith(twitterLikeButton);
     } else if (twitterLikeButtonPlaceholder) {
-      twitterLikeButtonPlaceholder.remove(); // Remove placeholder if no consent
+      twitterLikeButtonPlaceholder.remove();
     }
 
-    // Load the Clarity script dynamically after consent
+    // Dynamically load the Clarity script after consent
     if (clarityConsent === "yes") {
-      const clarityScript = document.createElement("script");
-      clarityScript.src = "https://www.clarity.ms/tag/f4v1091lex";
-      clarityScript.async = true;
-      document.body.appendChild(clarityScript);
+      loadScript("https://www.clarity.ms/tag/f4v1091lex");
     }
 
     // Remove the popup
