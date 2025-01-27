@@ -134,15 +134,11 @@
       twitterLikeButtonPlaceholder.remove(); // Remove placeholder if no consent
     }
 
-    // Show or hide the Clarity script based on consent
+    // Load the Clarity script dynamically after consent
     if (clarityConsent === "yes") {
-      // Load Clarity script after consent
       const clarityScript = document.createElement("script");
       clarityScript.src = "https://www.clarity.ms/tag/f4v1091lex";
       clarityScript.async = true;
-      clarityScript.onload = function () {
-        console.log("Clarity script loaded after consent");
-      };
       document.body.appendChild(clarityScript);
     }
 
