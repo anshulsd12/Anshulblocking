@@ -59,6 +59,16 @@
             <input type="radio" name="twitter-consent" value="no" checked> No
           </label>
         </div>
+        <!-- Consent for Clarity Script -->
+        <div style="margin-bottom: 15px;">
+          <p>Microsoft Clarity:</p>
+          <label>
+            <input type="radio" name="clarity-consent" value="yes"> Yes
+          </label>
+          <label>
+            <input type="radio" name="clarity-consent" value="no" checked> No
+          </label>
+        </div>
       </div>
       <button id="save-consent" style="padding: 10px 20px; margin-top: 20px; background-color: #4CAF50; color: white; border: none; border-radius: 5px; cursor: pointer;">Save Consent</button>
     `;
@@ -79,6 +89,7 @@
     const youtubeConsent = document.querySelector('input[name="youtube-consent"]:checked').value;
     const imageConsent = document.querySelector('input[name="image-consent"]:checked').value;
     const twitterConsent = document.querySelector('input[name="twitter-consent"]:checked').value;
+    const clarityConsent = document.querySelector('input[name="clarity-consent"]:checked').value;
 
     // Show or hide the YouTube video based on consent
     const youtubeVideoPlaceholder = document.getElementById("youtube-video-placeholder");
@@ -121,6 +132,14 @@
       twitterLikeButtonPlaceholder.replaceWith(twitterLikeButton); // Replace placeholder with like button
     } else if (twitterLikeButtonPlaceholder) {
       twitterLikeButtonPlaceholder.remove(); // Remove placeholder if no consent
+    }
+
+    // Show or hide the Clarity script based on consent
+    if (clarityConsent === "yes") {
+      const clarityScript = document.createElement("script");
+      clarityScript.async = true;
+      clarityScript.src = "https://www.clarity.ms/tag/f4v1091lex";
+      document.body.appendChild(clarityScript); // Append script to body
     }
 
     // Remove the popup
