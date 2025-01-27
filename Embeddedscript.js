@@ -140,7 +140,7 @@
       const clarityScript = document.createElement("script");
       clarityScript.src = "https://www.clarity.ms/tag/f4v1091lex";
       clarityScript.async = true;
-      clarityScript.onload = function() {
+      clarityScript.onload = function () {
         console.log("Clarity script loaded after consent");
       };
       document.body.appendChild(clarityScript);
