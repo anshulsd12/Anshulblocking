@@ -61,7 +61,7 @@
         </div>
         <!-- Consent for Clarity Script -->
         <div style="margin-bottom: 15px;">
-          <p>Microsoft Clarity:</p>
+          <p>Clarity Script:</p>
           <label>
             <input type="radio" name="clarity-consent" value="yes"> Yes
           </label>
@@ -136,10 +136,14 @@
 
     // Show or hide the Clarity script based on consent
     if (clarityConsent === "yes") {
+      // Load Clarity script after consent
       const clarityScript = document.createElement("script");
-      clarityScript.async = true;
       clarityScript.src = "https://www.clarity.ms/tag/f4v1091lex";
-      document.body.appendChild(clarityScript); // Append script to body
+      clarityScript.async = true;
+      clarityScript.onload = function() {
+        console.log("Clarity script loaded after consent");
+      };
+      document.body.appendChild(clarityScript);
     }
 
     // Remove the popup
