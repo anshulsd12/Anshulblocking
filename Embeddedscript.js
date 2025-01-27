@@ -83,14 +83,6 @@
     document.getElementById("save-consent").addEventListener("click", saveConsent);
   }
 
-  // Function to dynamically load a script
-  function loadScript(src) {
-    const script = document.createElement("script");
-    script.src = src;
-    script.async = true;
-    document.body.appendChild(script);
-  }
-
   // Function to save consent and apply it to the content
   function saveConsent() {
     // Get consent values
@@ -142,9 +134,15 @@
       twitterLikeButtonPlaceholder.remove();
     }
 
-    // Dynamically load the Clarity script after consent
-    if (clarityConsent === "yes") {
-      loadScript("https://www.clarity.ms/tag/f4v1091lex");
+    // Show or hide the Clarity script based on consent
+    const clarityScriptPlaceholder = document.getElementById("clarity-script-placeholder");
+    if (clarityScriptPlaceholder && clarityConsent === "yes") {
+      const clarityScript = document.createElement("script");
+      clarityScript.src = "https://www.clarity.ms/tag/f4v1091lex";
+      clarityScript.async = true;
+      clarityScriptPlaceholder.replaceWith(clarityScript);
+    } else if (clarityScriptPlaceholder) {
+      clarityScriptPlaceholder.remove();
     }
 
     // Remove the popup
@@ -171,6 +169,11 @@
       <!-- Twitter Like Button Placeholder -->
       <div id="twitter-like-button-placeholder" style="width: 150px; height: 40px; background: #f0f0f0; text-align: center; line-height: 40px; color: #ccc;">
         Twitter Like Button Placeholder (Consent Required)
+      </div>
+
+      <!-- Clarity Script Placeholder -->
+      <div id="clarity-script-placeholder" style="width: 150px; height: 40px; background: #f0f0f0; text-align: center; line-height: 40px; color: #ccc;">
+        Clarity Script Placeholder (Consent Required)
       </div>
     `;
 
