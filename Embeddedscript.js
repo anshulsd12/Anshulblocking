@@ -2,7 +2,7 @@
   // Function to remove existing cookies by name
   function deleteCookies(cookieNames) {
     cookieNames.forEach((name) => {
-      document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
+      document.cookie = `MUID=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
     });
   }
 
