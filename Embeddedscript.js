@@ -1,12 +1,26 @@
 (function () {
-  // Immediately remove Clarity script from the DOM until consent is given
-  function removeClarityScript() {
+  // Function to remove existing cookies by name
+  function deleteCookies(cookieNames) {
+    cookieNames.forEach((name) => {
+      document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
+    });
+  }
+
+  // List of cookies to block from the Clarity script
+  const clarityCookies = ["MUID", "CLID",];
+
+  // Immediately remove Clarity script and clear any related cookies
+  function blockClarityScript() {
+    // Remove Clarity script
     const clarityScript = document.querySelector(
       'script[src="https://www.clarity.ms/tag/f4v1091lex"]'
     );
     if (clarityScript) {
       clarityScript.remove();
     }
+
+    // Clear Clarity-related cookies
+    deleteCookies(clarityCookies);
   }
 
   // Function to create and display the Cookie Manager popup
@@ -130,7 +144,7 @@
 
   // Initialize the popup and block content on page load
   document.addEventListener("DOMContentLoaded", () => {
-    removeClarityScript(); // Remove Clarity script immediately
+    blockClarityScript(); // Block Clarity script immediately
     blockContent(); // Block other content
     createPopup(); // Show consent popup
   });
