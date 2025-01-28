@@ -13,9 +13,6 @@
     if (youtubePlaceholder) {
       const youtubeIframe = document.createElement("iframe");
       youtubeIframe.src = "https://www.youtube.com/embed/oDNAsOnfZ-Q";
-      youtubeIframe.width = "560";
-      youtubeIframe.height = "315";
-      youtubeIframe.frameBorder = "0";
       youtubeIframe.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture";
       youtubeIframe.allowFullscreen = true;
       youtubePlaceholder.replaceWith(youtubeIframe);
