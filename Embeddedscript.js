@@ -39,26 +39,7 @@
             <input type="radio" name="youtube-consent" value="no" checked> No
           </label>
         </div>
-        <!-- Consent for Image -->
-        <div style="margin-bottom: 15px;">
-          <p>Image:</p>
-          <label>
-            <input type="radio" name="image-consent" value="yes"> Yes
-          </label>
-          <label>
-            <input type="radio" name="image-consent" value="no" checked> No
-          </label>
-        </div>
-        <!-- Consent for Twitter Like Button -->
-        <div style="margin-bottom: 15px;">
-          <p>Twitter Like Button:</p>
-          <label>
-            <input type="radio" name="twitter-consent" value="yes"> Yes
-          </label>
-          <label>
-            <input type="radio" name="twitter-consent" value="no" checked> No
-          </label>
-        </div>
+      
         <!-- Consent for Clarity Script -->
         <div style="margin-bottom: 15px;">
           <p>Clarity Script:</p>
@@ -87,8 +68,6 @@
   function saveConsent() {
     // Get consent values
     const youtubeConsent = document.querySelector('input[name="youtube-consent"]:checked').value;
-    const imageConsent = document.querySelector('input[name="image-consent"]:checked').value;
-    const twitterConsent = document.querySelector('input[name="twitter-consent"]:checked').value;
     const clarityConsent = document.querySelector('input[name="clarity-consent"]:checked').value;
 
     // Show or hide the YouTube video based on consent
@@ -107,33 +86,6 @@
     } else if (youtubeVideoPlaceholder) {
       youtubeVideoPlaceholder.remove();
     }
-
-    // Show or hide the image based on consent
-    const imagePlaceholder = document.getElementById("image-placeholder");
-    if (imagePlaceholder && imageConsent === "yes") {
-      const image = document.createElement("img");
-      image.id = "image";
-      image.src = "https://www.tama.com/common/product_artist_file/file/pen_Starclassic2023.webp";
-      image.alt = "Drums Image";
-      imagePlaceholder.replaceWith(image);
-    } else if (imagePlaceholder) {
-      imagePlaceholder.remove();
-    }
-
-    // Show or hide the Twitter Like button based on consent
-    const twitterLikeButtonPlaceholder = document.getElementById("twitter-like-button-placeholder");
-    if (twitterLikeButtonPlaceholder && twitterConsent === "yes") {
-      const twitterLikeButton = document.createElement("a");
-      twitterLikeButton.href = "https://twitter.com/intent/like?tweet_id=1234567890";
-      twitterLikeButton.classList.add("twitter-like-button");
-      twitterLikeButton.setAttribute("data-show-count", "true");
-      twitterLikeButton.setAttribute("data-size", "large");
-      twitterLikeButton.innerText = "Like";
-      twitterLikeButtonPlaceholder.replaceWith(twitterLikeButton);
-    } else if (twitterLikeButtonPlaceholder) {
-      twitterLikeButtonPlaceholder.remove();
-    }
-
     // Show or hide the Clarity script based on consent
     const clarityScriptPlaceholder = document.getElementById("clarity-script-placeholder");
     if (clarityScriptPlaceholder && clarityConsent === "yes") {
@@ -161,15 +113,6 @@
         YouTube Video Placeholder (Consent Required)
       </div>
 
-      <!-- Image Placeholder -->
-      <div id="image-placeholder" style="width: 300px; height: 200px; background: #f0f0f0; text-align: center; line-height: 200px; color: #ccc;">
-        Image Placeholder (Consent Required)
-      </div>
-
-      <!-- Twitter Like Button Placeholder -->
-      <div id="twitter-like-button-placeholder" style="width: 150px; height: 40px; background: #f0f0f0; text-align: center; line-height: 40px; color: #ccc;">
-        Twitter Like Button Placeholder (Consent Required)
-      </div>
 
       <!-- Clarity Script Placeholder -->
       <div id="clarity-script-placeholder" style="width: 150px; height: 40px; background: #f0f0f0; text-align: center; line-height: 40px; color: #ccc;">
