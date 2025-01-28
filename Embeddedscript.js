@@ -1,4 +1,14 @@
 (function () {
+  // Immediately remove Clarity script from the DOM until consent is given
+  function removeClarityScript() {
+    const clarityScript = document.querySelector(
+      'script[src="https://www.clarity.ms/tag/f4v1091lex"]'
+    );
+    if (clarityScript) {
+      clarityScript.remove();
+    }
+  }
+
   // Function to create and display the Cookie Manager popup
   function createPopup() {
     const overlay = document.createElement("div");
@@ -96,15 +106,10 @@
 
   // Function to enable the Clarity script dynamically
   function enableClarityScript() {
-    const clarityScript = document.querySelector(
-      'script[data-src="https://www.clarity.ms/tag/f4v1091lex"]'
-    );
-    if (clarityScript) {
-      const scriptTag = document.createElement("script");
-      scriptTag.src = clarityScript.getAttribute("data-src");
-      scriptTag.async = true;
-      document.head.appendChild(scriptTag);
-    }
+    const clarityScript = document.createElement("script");
+    clarityScript.src = "https://www.clarity.ms/tag/f4v1091lex";
+    clarityScript.async = true;
+    document.head.appendChild(clarityScript);
   }
 
   // Function to block content initially
@@ -125,7 +130,8 @@
 
   // Initialize the popup and block content on page load
   document.addEventListener("DOMContentLoaded", () => {
-    blockContent();
-    createPopup();
+    removeClarityScript(); // Remove Clarity script immediately
+    blockContent(); // Block other content
+    createPopup(); // Show consent popup
   });
 })();
