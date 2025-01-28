@@ -96,16 +96,18 @@
 
   // Function to enable the Clarity script dynamically
   function enableClarityScript() {
-    if (!document.querySelector('script[data-clarity="true"]')) {
-      const clarityScript = document.createElement("script");
-      clarityScript.src = "https://www.clarity.ms/tag/f4v1091lex";
-      clarityScript.async = true;
-      clarityScript.setAttribute("data-clarity", "true");
-      document.head.appendChild(clarityScript);
+    const clarityScript = document.querySelector(
+      'script[data-src="https://www.clarity.ms/tag/f4v1091lex"]'
+    );
+    if (clarityScript) {
+      const scriptTag = document.createElement("script");
+      scriptTag.src = clarityScript.getAttribute("data-src");
+      scriptTag.async = true;
+      document.head.appendChild(scriptTag);
     }
   }
 
-  // Function to block both YouTube iframe and Clarity script initially
+  // Function to block content initially
   function blockContent() {
     // Replace YouTube iframe with a placeholder
     const youtubeIframe = document.querySelector('iframe[src*="youtube.com"]');
@@ -118,14 +120,6 @@
       `;
       youtubePlaceholder.innerText = "YouTube Video Placeholder (Consent Required)";
       youtubeIframe.replaceWith(youtubePlaceholder);
-    }
-
-    // Remove Clarity script if it exists
-    const clarityScript = document.querySelector(
-      'script[src="https://www.clarity.ms/tag/f4v1091lex"]'
-    );
-    if (clarityScript) {
-      clarityScript.remove();
     }
   }
 
