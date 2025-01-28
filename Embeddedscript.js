@@ -1,10 +1,14 @@
 (function () {
-  // Function to dynamically load the Clarity script
-  function loadClarityScript() {
-    const clarityScript = document.createElement("script");
-    clarityScript.src = "https://www.clarity.ms/tag/f4v1091lex";
-    clarityScript.async = true;
-    document.head.appendChild(clarityScript); // Inject the script after consent
+  // Function to unblock and execute the Clarity script
+  function unblockClarityScript() {
+    const clarityScript = document.querySelector('script[src="https://www.clarity.ms/tag/f4v1091lex"]');
+    if (clarityScript) {
+      // Create a new script element to execute the blocked script
+      const newScript = document.createElement("script");
+      newScript.src = clarityScript.src;
+      newScript.async = true;
+      document.head.appendChild(newScript); // Inject the script after consent
+    }
   }
 
   // Function to dynamically load the YouTube iframe
@@ -13,32 +17,22 @@
     if (youtubePlaceholder) {
       const youtubeIframe = document.createElement("iframe");
       youtubeIframe.src = "https://www.youtube.com/embed/oDNAsOnfZ-Q";
+      youtubeIframe.width = "560";
+      youtubeIframe.height = "315";
+      youtubeIframe.frameBorder = "0";
       youtubeIframe.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture";
       youtubeIframe.allowFullscreen = true;
       youtubePlaceholder.replaceWith(youtubeIframe);
     }
   }
 
-  // Function to block initial script and iframe
-  function blockInitialContent() {
-    // Remove Clarity script from the DOM if it exists
+  // Function to block the Clarity script initially
+  function blockClarityScript() {
     const clarityScript = document.querySelector('script[src="https://www.clarity.ms/tag/f4v1091lex"]');
     if (clarityScript) {
-      clarityScript.remove();
-    }
-
-    // Replace YouTube iframe with a placeholder
-    const youtubeIframe = document.querySelector('iframe[src="https://www.youtube.com/embed/oDNAsOnfZ-Q"]');
-    if (youtubeIframe) {
-      const placeholder = document.createElement("div");
-      placeholder.id = "youtube-video-placeholder";
-      placeholder.style = `
-        width: 560px; height: 315px; background: #f0f0f0;
-        display: flex; justify-content: center; align-items: center;
-        color: #ccc; font-family: Arial, sans-serif;
-      `;
-      placeholder.textContent = "YouTube Video Placeholder (Consent Required)";
-      youtubeIframe.replaceWith(placeholder);
+      // Replace the script's src with a dummy value to prevent it from loading
+      clarityScript.dataset.originalSrc = clarityScript.src; // Store the original src
+      clarityScript.src = ""; // Set src to empty to block loading
     }
   }
 
@@ -82,7 +76,7 @@
 
     // Add event listeners for consent buttons
     document.getElementById("accept-consent").addEventListener("click", () => {
-      loadClarityScript(); // Load Clarity script after consent
+      unblockClarityScript(); // Unblock and load the Clarity script
       loadYouTubeVideo(); // Load YouTube iframe after consent
       document.getElementById("popup-overlay").remove(); // Remove popup
     });
@@ -94,7 +88,7 @@
 
   // On page load
   document.addEventListener("DOMContentLoaded", () => {
-    blockInitialContent(); // Block initial content
+    blockClarityScript(); // Block the Clarity script initially
     createPopup(); // Show consent popup
   });
 })();
