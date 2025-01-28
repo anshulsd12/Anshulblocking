@@ -1,37 +1,29 @@
 (function () {
-  // Function to block Clarity script by preventing it from loading
-  function blockClarityScript() {
-    const clarityScriptSelector = 'script[src*="clarity.ms"]';
+  // Function to remove existing cookies by name
+  function deleteCookies(cookieNames) {
+    cookieNames.forEach((name) => {
+      document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
+    });
+  }
 
-    // Check if the Clarity script is in the DOM and remove it if found
-    const clarityScript = document.querySelector(clarityScriptSelector);
+  // List of cookies to block from the Clarity script
+  const clarityCookies = ["_clck", "_clsk", "_cltk", "MUID", "CLID"];
+
+  // Immediately remove Clarity script and clear any related cookies
+  function blockClarityScript() {
+    // Remove Clarity script from the DOM if it exists
+    const clarityScript = document.querySelector(
+      'script[src="https://www.clarity.ms/tag/f4v1091lex"]'
+    );
     if (clarityScript) {
-      clarityScript.remove(); // Remove script tag to ensure it doesn't load
+      clarityScript.remove();
     }
 
-    // Monitor new script tags dynamically added to the DOM
-    const observer = new MutationObserver((mutations) => {
-      mutations.forEach((mutation) => {
-        mutation.addedNodes.forEach((node) => {
-          if (node.tagName === "SCRIPT" && node.src.includes("clarity.ms")) {
-            node.remove(); // Remove Clarity script if added dynamically
-          }
-        });
-      });
-    });
-
-    observer.observe(document.head, { childList: true });
+    // Clear Clarity-related cookies
+    deleteCookies(clarityCookies);
   }
 
-  // Function to enable the Clarity script after consent
-  function enableClarityScript() {
-    const clarityScript = document.createElement("script");
-    clarityScript.src = "https://www.clarity.ms/tag/f4v1091lex";
-    clarityScript.async = true;
-    document.head.appendChild(clarityScript); // Dynamically load the script
-  }
-
-  // Function to create the consent popup
+  // Function to create and display the Cookie Manager popup
   function createPopup() {
     const overlay = document.createElement("div");
     overlay.id = "popup-overlay";
@@ -49,36 +41,116 @@
       text-align: center; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
     `;
     popup.innerHTML = `
-      <h2 style="margin-bottom: 10px;">Cookie Consent</h2>
-      <p>Do you consent to load the Clarity Analytics script?</p>
-      <button id="accept-consent" style="
+      <h2 style="margin-bottom: 10px;">Cookie Manager</h2>
+      <p>Manage your consent for the following content:</p>
+      <div style="margin-top: 20px; text-align: left;">
+        <!-- Consent for YouTube -->
+        <div style="margin-bottom: 15px;">
+          <p>YouTube Video:</p>
+          <label>
+            <input type="radio" name="youtube-consent" value="yes"> Yes
+          </label>
+          <label>
+            <input type="radio" name="youtube-consent" value="no" checked> No
+          </label>
+        </div>
+        <!-- Consent for Clarity -->
+        <div style="margin-bottom: 15px;">
+          <p>Clarity Analytics:</p>
+          <label>
+            <input type="radio" name="clarity-consent" value="yes"> Yes
+          </label>
+          <label>
+            <input type="radio" name="clarity-consent" value="no" checked> No
+          </label>
+        </div>
+      </div>
+      <button id="save-consent" style="
         padding: 10px 20px; margin-top: 20px;
         background-color: #4CAF50; color: white; border: none;
         border-radius: 5px; cursor: pointer;
-      ">Yes, I Consent</button>
-      <button id="deny-consent" style="
-        padding: 10px 20px; margin-top: 20px; margin-left: 10px;
-        background-color: #F44336; color: white; border: none;
-        border-radius: 5px; cursor: pointer;
-      ">No, I Deny</button>
+      ">Save Consent</button>
     `;
     overlay.appendChild(popup);
     document.body.appendChild(overlay);
 
-    // Add event listeners for consent buttons
-    document.getElementById("accept-consent").addEventListener("click", () => {
-      enableClarityScript(); // Load Clarity script
-      document.getElementById("popup-overlay").remove(); // Remove popup
-    });
-
-    document.getElementById("deny-consent").addEventListener("click", () => {
-      document.getElementById("popup-overlay").remove(); // Remove popup
-    });
+    document
+      .getElementById("save-consent")
+      .addEventListener("click", saveConsent);
   }
 
-  // On page load
+  // Function to handle consent saving and applying
+  function saveConsent() {
+    const youtubeConsent = document.querySelector(
+      'input[name="youtube-consent"]:checked'
+    ).value;
+    const clarityConsent = document.querySelector(
+      'input[name="clarity-consent"]:checked'
+    ).value;
+
+    if (youtubeConsent === "yes") {
+      enableYouTubeIframe();
+    }
+    if (clarityConsent === "yes") {
+      enableClarityScript();
+    }
+
+    // Remove the popup after saving consent
+    const overlay = document.getElementById("popup-overlay");
+    if (overlay) overlay.remove();
+  }
+
+  // Function to enable the YouTube iframe dynamically
+  function enableYouTubeIframe() {
+    const youtubePlaceholder = document.getElementById(
+      "youtube-iframe-placeholder"
+    );
+    if (youtubePlaceholder) {
+      const youtubeIframe = document.createElement("iframe");
+      youtubeIframe.src = "https://www.youtube.com/embed/oDNAsOnfZ-Q";
+      youtubeIframe.width = "560";
+      youtubeIframe.height = "315";
+      youtubeIframe.frameBorder = "0";
+      youtubeIframe.allow =
+        "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture";
+      youtubeIframe.allowFullscreen = true;
+      youtubePlaceholder.replaceWith(youtubeIframe);
+    }
+  }
+
+  // Function to enable the Clarity script dynamically
+  function enableClarityScript() {
+    const clarityScript = document.createElement("script");
+    clarityScript.src = "https://www.clarity.ms/tag/f4v1091lex";
+    clarityScript.async = true;
+    document.head.appendChild(clarityScript);
+  }
+
+  // Function to block content initially
+  function blockContent() {
+    // Replace YouTube iframe with a placeholder
+    const youtubeIframe = document.querySelector('iframe[src*="youtube.com"]');
+    if (youtubeIframe) {
+      const youtubePlaceholder = document.createElement("div");
+      youtubePlaceholder.id = "youtube-iframe-placeholder";
+      youtubePlaceholder.style = `
+        width: 560px; height: 315px; background: #f0f0f0;
+        text-align: center; line-height: 315px; color: #ccc;
+      `;
+      youtubePlaceholder.innerText = "YouTube Video Placeholder (Consent Required)";
+      youtubeIframe.replaceWith(youtubePlaceholder);
+    }
+  }
+
+  // Initialize the popup and block content on page load
   document.addEventListener("DOMContentLoaded", () => {
-    blockClarityScript(); // Block script and cookies initially
-    createPopup(); // Show consent popup
+    // Block Clarity script immediately
+    blockClarityScript(); 
+
+    // Block other content like YouTube iframe
+    blockContent(); 
+
+    // Create and display the consent popup
+    createPopup(); 
   });
 })();
