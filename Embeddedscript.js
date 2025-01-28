@@ -61,7 +61,7 @@
         </div>
         <!-- Consent for Clarity Script -->
         <div style="margin-bottom: 15px;">
-          <p>Clarity Analytics:</p>
+          <p>Clarity Script:</p>
           <label>
             <input type="radio" name="clarity-consent" value="yes"> Yes
           </label>
@@ -91,9 +91,52 @@
     const twitterConsent = document.querySelector('input[name="twitter-consent"]:checked').value;
     const clarityConsent = document.querySelector('input[name="clarity-consent"]:checked').value;
 
-    // Dynamically inject the Clarity script based on consent
+    // Show or hide the YouTube video based on consent
+    const youtubeVideoPlaceholder = document.getElementById("youtube-video-placeholder");
+    if (youtubeVideoPlaceholder && youtubeConsent === "yes") {
+      const youtubeVideo = document.createElement("iframe");
+      youtubeVideo.id = "youtube-video";
+      youtubeVideo.width = "560";
+      youtubeVideo.height = "315";
+      youtubeVideo.src = "https://www.youtube.com/embed/oDNAsOnfZ-Q";
+      youtubeVideo.title = "YouTube video";
+      youtubeVideo.frameborder = "0";
+      youtubeVideo.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture";
+      youtubeVideo.allowfullscreen = true;
+      youtubeVideoPlaceholder.replaceWith(youtubeVideo);
+    } else if (youtubeVideoPlaceholder) {
+      youtubeVideoPlaceholder.remove();
+    }
+
+    // Show or hide the image based on consent
+    const imagePlaceholder = document.getElementById("image-placeholder");
+    if (imagePlaceholder && imageConsent === "yes") {
+      const image = document.createElement("img");
+      image.id = "image";
+      image.src = "https://www.tama.com/common/product_artist_file/file/pen_Starclassic2023.webp";
+      image.alt = "Drums Image";
+      imagePlaceholder.replaceWith(image);
+    } else if (imagePlaceholder) {
+      imagePlaceholder.remove();
+    }
+
+    // Show or hide the Twitter Like button based on consent
+    const twitterLikeButtonPlaceholder = document.getElementById("twitter-like-button-placeholder");
+    if (twitterLikeButtonPlaceholder && twitterConsent === "yes") {
+      const twitterLikeButton = document.createElement("a");
+      twitterLikeButton.href = "https://twitter.com/intent/like?tweet_id=1234567890";
+      twitterLikeButton.classList.add("twitter-like-button");
+      twitterLikeButton.setAttribute("data-show-count", "true");
+      twitterLikeButton.setAttribute("data-size", "large");
+      twitterLikeButton.innerText = "Like";
+      twitterLikeButtonPlaceholder.replaceWith(twitterLikeButton);
+    } else if (twitterLikeButtonPlaceholder) {
+      twitterLikeButtonPlaceholder.remove();
+    }
+
+    // Show or hide the Clarity script based on consent
     const clarityScriptPlaceholder = document.getElementById("clarity-script-placeholder");
-    if (clarityConsent === "yes") {
+    if (clarityScriptPlaceholder && clarityConsent === "yes") {
       const clarityScript = document.createElement("script");
       clarityScript.src = "https://www.clarity.ms/tag/f4v1091lex";
       clarityScript.async = true;
@@ -109,10 +152,30 @@
 
   // Initialize the popup on page load
   document.addEventListener("DOMContentLoaded", () => {
-    // Initially hide the Clarity script using a placeholder
-    const clarityPlaceholder = document.createElement("div");
-    clarityPlaceholder.id = "clarity-script-placeholder";
-    document.body.appendChild(clarityPlaceholder);
+    // Initially hide the content by using placeholders
+    const contentDiv = document.getElementById("content");
+
+    contentDiv.innerHTML = `
+      <!-- YouTube Video Placeholder -->
+      <div id="youtube-video-placeholder" style="width: 560px; height: 315px; background: #f0f0f0; text-align: center; line-height: 315px; color: #ccc;">
+        YouTube Video Placeholder (Consent Required)
+      </div>
+
+      <!-- Image Placeholder -->
+      <div id="image-placeholder" style="width: 300px; height: 200px; background: #f0f0f0; text-align: center; line-height: 200px; color: #ccc;">
+        Image Placeholder (Consent Required)
+      </div>
+
+      <!-- Twitter Like Button Placeholder -->
+      <div id="twitter-like-button-placeholder" style="width: 150px; height: 40px; background: #f0f0f0; text-align: center; line-height: 40px; color: #ccc;">
+        Twitter Like Button Placeholder (Consent Required)
+      </div>
+
+      <!-- Clarity Script Placeholder -->
+      <div id="clarity-script-placeholder" style="width: 150px; height: 40px; background: #f0f0f0; text-align: center; line-height: 40px; color: #ccc;">
+        Clarity Script Placeholder (Consent Required)
+      </div>
+    `;
 
     // Create and show the popup
     createPopup();
