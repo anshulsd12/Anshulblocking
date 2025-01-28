@@ -1,29 +1,26 @@
 (function () {
-  // Function to remove existing cookies by name
-  function deleteCookies(cookieNames) {
-    cookieNames.forEach((name) => {
-      document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
-    });
-  }
-
-  // List of cookies to block from the Clarity script
+  // List of cookies related to Clarity
   const clarityCookies = ["_clck", "_clsk", "_cltk", "MUID", "CLID"];
 
-  // Immediately remove Clarity script and clear any related cookies
+  // Function to block Clarity script loading until consent is granted
   function blockClarityScript() {
-    // Remove Clarity script from the DOM if it exists
-    const clarityScript = document.querySelector(
-      'script[src="https://www.clarity.ms/tag/f4v1091lex"]'
-    );
-    if (clarityScript) {
-      clarityScript.remove();
+    // Check if the Clarity script is already in the DOM, and remove it if it is
+    const existingClarityScript = document.querySelector('script[src*="clarity.ms"]');
+    if (existingClarityScript) {
+      existingClarityScript.remove();
     }
-
-    // Clear Clarity-related cookies
-    deleteCookies(clarityCookies);
+    // Do not load the Clarity script yet
   }
 
-  // Function to create and display the Cookie Manager popup
+  // Function to insert Clarity script once consent is granted
+  function enableClarityScript() {
+    const clarityScript = document.createElement("script");
+    clarityScript.src = "https://www.clarity.ms/tag/f4v1091lex";
+    clarityScript.async = true;
+    document.head.appendChild(clarityScript); // Append the script only after consent
+  }
+
+  // Function to create the Cookie Manager popup
   function createPopup() {
     const overlay = document.createElement("div");
     overlay.id = "popup-overlay";
@@ -116,14 +113,6 @@
       youtubeIframe.allowFullscreen = true;
       youtubePlaceholder.replaceWith(youtubeIframe);
     }
-  }
-
-  // Function to enable the Clarity script dynamically
-  function enableClarityScript() {
-    const clarityScript = document.createElement("script");
-    clarityScript.src = "https://www.clarity.ms/tag/f4v1091lex";
-    clarityScript.async = true;
-    document.head.appendChild(clarityScript);
   }
 
   // Function to block content initially
