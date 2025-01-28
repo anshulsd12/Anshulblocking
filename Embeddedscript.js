@@ -3,6 +3,7 @@
   function deleteCookies(cookieNames) {
     cookieNames.forEach((name) => {
       document.cookie = `MUID=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
+      document.cookie = `CLID=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
     });
   }
 
