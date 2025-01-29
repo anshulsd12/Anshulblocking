@@ -1,77 +1,82 @@
-(function() {
-    // Function to check and handle consent
-    function checkConsentAndLoad() {
-        let consentGiven = localStorage.getItem("cookieConsent") === "true";
-
+(function () {
+    // Function to block the YouTube iframe until consent is given
+    function blockYouTubeVideo() {
         const youtubeIframe = document.querySelector(".youtube-vid iframe");
-
-        if (!youtubeIframe) {
-            console.warn("YouTube iframe not found.");
-            return;
-        }
-
-        if (!consentGiven) {
-            // Store the original src in data-src and remove the src to prevent loading
+        if (youtubeIframe) {
             youtubeIframe.setAttribute("data-src", youtubeIframe.src);
             youtubeIframe.src = "";
-            createConsentPopup();
-        } else {
-            // If consent is already given, load the video
-            loadYouTubeVideo();
         }
     }
 
-    // Function to load YouTube video
-    function loadYouTubeVideo() {
+    // Function to enable the YouTube iframe dynamically
+    function enableYouTubeVideo() {
         const youtubeIframe = document.querySelector(".youtube-vid iframe");
         if (youtubeIframe && youtubeIframe.dataset.src) {
             youtubeIframe.src = youtubeIframe.dataset.src;
         }
     }
 
-    // Function to create and show the consent popup
-    function createConsentPopup() {
-        const popup = document.createElement("div");
-        popup.id = "cookie-consent-popup";
-        popup.style.position = "fixed";
-        popup.style.top = "0";
-        popup.style.left = "0";
-        popup.style.width = "100%";
-        popup.style.height = "100%";
-        popup.style.backgroundColor = "rgba(0, 0, 0, 0.8)";
-        popup.style.color = "white";
-        popup.style.display = "flex";
-        popup.style.alignItems = "center";
-        popup.style.justifyContent = "center";
-        popup.style.zIndex = "9999";
-        popup.style.fontFamily = "Arial, sans-serif";
-        popup.style.textAlign = "center";
-        popup.style.padding = "20px";
-
-        popup.innerHTML = `
-            <div style="max-width: 400px; padding: 20px; background: #333; border-radius: 10px;">
-                <h2>Cookie Consent</h2>
-                <p>Do you allow YouTube to load and store cookies?</p>
-                <div style="display: flex; justify-content: center; gap: 10px; margin-top: 15px;">
-                    <button id="accept-cookie" style="padding: 10px 20px; background: #28a745; color: white; border: none; border-radius: 5px; cursor: pointer;">Accept my cookie</button>
-                    <button id="decline-cookie" style="padding: 10px 20px; background: #dc3545; color: white; border: none; border-radius: 5px; cursor: pointer;">Decline</button>
-                </div>
-            </div>
+    // Function to create the Cookie Manager popup
+    function createPopup() {
+        const overlay = document.createElement("div");
+        overlay.id = "popup-overlay";
+        overlay.style = `
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            background-color: rgba(0, 0, 0, 0.7); z-index: 1000; display: flex;
+            justify-content: center; align-items: center; color: #fff;
+            font-family: Arial, sans-serif;
         `;
-        document.body.appendChild(popup);
 
-        document.getElementById("accept-cookie").addEventListener("click", function() {
-            localStorage.setItem("cookieConsent", "true");
-            popup.remove();
-            loadYouTubeVideo(); // Load YouTube video
-        });
+        const popup = document.createElement("div");
+        popup.id = "popup";
+        popup.style = `
+            background-color: #333; padding: 20px; border-radius: 10px;
+            text-align: center; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        `;
+        popup.innerHTML = `
+            <h2 style="margin-bottom: 10px;">Cookie Manager</h2>
+            <p>Manage your consent for the following content:</p>
+            <div style="margin-top: 20px; text-align: left;">
+                <!-- Consent for YouTube -->
+                <div style="margin-bottom: 15px;">
+                    <p>YouTube Video:</p>
+                    <label>
+                        <input type="radio" name="youtube-consent" value="yes"> Yes I accept
+                    </label>
+                    <label>
+                        <input type="radio" name="youtube-consent" value="no" checked> No
+                    </label>
+                </div>
+            <button id="save-consent" style="
+                padding: 10px 20px; margin-top: 20px;
+                background-color: #4CAF50; color: white; border: none;
+                border-radius: 5px; cursor: pointer;
+            ">Save Consent</button>
+        `;
+        overlay.appendChild(popup);
+        document.body.appendChild(overlay);
 
-        document.getElementById("decline-cookie").addEventListener("click", function() {
-            localStorage.setItem("cookieConsent", "false");
-            popup.remove();
-        });
+        document.getElementById("save-consent").addEventListener("click", saveConsent);
     }
 
-    // Run the function on page load
-    document.addEventListener("DOMContentLoaded", checkConsentAndLoad);
+    // Function to handle consent saving and applying
+    function saveConsent() {
+        const youtubeConsent = document.querySelector('input[name="youtube-consent"]:checked').value;
+       
+        if (youtubeConsent === "yes") {
+            enableYouTubeVideo();
+        }
+       
+
+        // Remove the popup after saving consent
+        const overlay = document.getElementById("popup-overlay");
+        if (overlay) overlay.remove();
+    }
+
+    // Initialize the popup and block content on page load
+    document.addEventListener("DOMContentLoaded", () => {
+        blockYouTubeVideo(); 
+        
+        createPopup(); 
+    });
 })();
