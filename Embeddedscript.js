@@ -1,7 +1,7 @@
 (function () {
     // Function to block the YouTube iframe until consent is given
     function blockYouTubeVideo() {
-        const youtubeIframe = document.querySelector(".youtube-vid iframe");
+        const youtubeIframe = document.querySelector("iframe");
         if (youtubeIframe) {
             youtubeIframe.setAttribute("data-src", youtubeIframe.src);
             youtubeIframe.src = "";  // Prevents video from loading
