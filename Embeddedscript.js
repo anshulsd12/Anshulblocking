@@ -53,7 +53,7 @@
                 <h2>Cookie Consent</h2>
                 <p>Do you allow YouTube to load and store cookies?</p>
                 <div style="display: flex; justify-content: center; gap: 10px; margin-top: 15px;">
-                    <button id="accept-cookie" style="padding: 10px 20px; background: #FFA500; color: white; border: none; border-radius: 5px; cursor: pointer;">Accept</button>
+                    <button id="accept-cookie" style="padding: 10px 20px; background: #FFA500; color: white; border: none; border-radius: 5px; cursor: pointer;">Accept Cookie</button>
                     <button id="decline-cookie" style="padding: 10px 20px; background: #dc3545; color: white; border: none; border-radius: 5px; cursor: pointer;">Decline</button>
                 </div>
             </div>
