@@ -108,7 +108,7 @@
         const observer = new MutationObserver((mutationsList, observer) => {
             for (const mutation of mutationsList) {
                 if (mutation.type === "childList") {
-                    const youtubeIframe = document.querySelector(".youtube-vid iframe");
+                    const youtubeIframe = document.querySelector("iframe");
                     if (youtubeIframe) {
                         blockYouTubeVideo();
                         observer.disconnect(); // Stop observing once the iframe is modified
