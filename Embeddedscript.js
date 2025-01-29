@@ -60,7 +60,7 @@
                         <input type="radio" name="youtube-consent" value="yes"> Yes I accept
                     </label>
                     <label>
-                        <input type="radio" name="youtube-consent" value="no" checked> No
+                        <input type="radio" name="youtube-consent" value="no" checked> No I don't
                     </label>
                 </div>
                 <!-- Consent for Clarity -->
