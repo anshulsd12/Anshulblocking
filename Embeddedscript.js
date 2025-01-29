@@ -1,18 +1,39 @@
 (function () {
-  // Function to prevent Clarity script from loading before consent
+  // List of cookies related to Clarity
+  const clarityCookies = ["_clck", "_clsk", "_cltk", "MUID", "CLID"];
+
+  // Function to block Clarity script loading until consent is granted
   function blockClarityScript() {
-    const clarityScript = document.querySelector('script[src*="clarity.ms"]');
-    if (clarityScript) {
-      clarityScript.remove(); // Remove if already injected
+    const existingClarityScript = document.querySelector('script[src*="clarity.ms"]');
+    if (existingClarityScript) {
+      existingClarityScript.remove();
     }
   }
 
-  // Function to load Clarity script after consent is granted
+  // Function to insert Clarity script once consent is granted
   function enableClarityScript() {
-    const clarityScript = document.createElement("script");
-    clarityScript.src = "https://www.clarity.ms/tag/f4v1091lex";
-    clarityScript.async = true;
-    document.head.appendChild(clarityScript);
+    if (!document.querySelector('script[src*="clarity.ms"]')) {
+      const clarityScript = document.createElement("script");
+      clarityScript.src = "https://www.clarity.ms/tag/f4v1091lex";
+      clarityScript.async = true;
+      document.head.appendChild(clarityScript);
+    }
+  }
+
+  // Function to enable YouTube iframe dynamically
+  function enableYouTubeIframe() {
+    const youtubePlaceholder = document.getElementById("youtube-iframe-placeholder");
+    if (youtubePlaceholder) {
+      const youtubeIframe = document.createElement("iframe");
+      youtubeIframe.width = "560";
+      youtubeIframe.height = "315";
+      youtubeIframe.src = "https://www.youtube.com/embed/rYb4JNGShOM?si=K3yUbeStbhNIMYNJ";
+      youtubeIframe.title = "YouTube video player";
+      youtubeIframe.frameBorder = "0";
+      youtubeIframe.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture";
+      youtubeIframe.allowFullscreen = true;
+      youtubePlaceholder.replaceWith(youtubeIframe);
+    }
   }
 
   // Function to create the Cookie Manager popup
@@ -66,19 +87,13 @@
     overlay.appendChild(popup);
     document.body.appendChild(overlay);
 
-    document
-      .getElementById("save-consent")
-      .addEventListener("click", saveConsent);
+    document.getElementById("save-consent").addEventListener("click", saveConsent);
   }
 
   // Function to handle consent saving and applying
   function saveConsent() {
-    const youtubeConsent = document.querySelector(
-      'input[name="youtube-consent"]:checked'
-    ).value;
-    const clarityConsent = document.querySelector(
-      'input[name="clarity-consent"]:checked'
-    ).value;
+    const youtubeConsent = document.querySelector('input[name="youtube-consent"]:checked').value;
+    const clarityConsent = document.querySelector('input[name="clarity-consent"]:checked').value;
 
     if (youtubeConsent === "yes") {
       enableYouTubeIframe();
@@ -90,26 +105,6 @@
     // Remove the popup after saving consent
     const overlay = document.getElementById("popup-overlay");
     if (overlay) overlay.remove();
-  }
-
-  // Function to enable the YouTube iframe dynamically
-  function enableYouTubeIframe() {
-    const youtubePlaceholder = document.getElementById(
-      "youtube-iframe-placeholder"
-    );
-    if (youtubePlaceholder) {
-      const youtubeIframe = document.createElement("iframe");
-      youtubeIframe.width = "560";
-      youtubeIframe.height = "315";
-      youtubeIframe.src = "https://www.youtube.com/embed/rYb4JNGShOM?si=K3yUbeStbhNIMYNJ";
-      youtubeIframe.title = "YouTube video player";
-      youtubeIframe.frameBorder = "0";
-      youtubeIframe.allow =
-        "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share";
-      youtubeIframe.referrerPolicy = "strict-origin-when-cross-origin";
-      youtubeIframe.allowFullscreen = true;
-      youtubePlaceholder.replaceWith(youtubeIframe);
-    }
   }
 
   // Function to block content initially
@@ -130,8 +125,8 @@
 
   // Initialize the popup and block content on page load
   document.addEventListener("DOMContentLoaded", () => {
-    blockClarityScript(); // Block Clarity immediately
-    blockContent(); // Block YouTube iframe
-    createPopup(); // Show consent popup
+    blockClarityScript(); // Block Clarity script immediately
+    blockContent(); // Block other content like YouTube iframe
+    createPopup(); // Create and display the consent popup
   });
 })();
