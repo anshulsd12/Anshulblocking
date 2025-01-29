@@ -1,13 +1,13 @@
 (function () {
-  // Function to block Clarity script loading until consent is granted
+  // Function to prevent Clarity script from loading before consent
   function blockClarityScript() {
-    const existingClarityScript = document.querySelector('script[src*="clarity.ms"]');
-    if (existingClarityScript) {
-      existingClarityScript.remove();
+    const clarityScript = document.querySelector('script[src*="clarity.ms"]');
+    if (clarityScript) {
+      clarityScript.remove(); // Remove if already injected
     }
   }
 
-  // Function to insert Clarity script once consent is granted
+  // Function to load Clarity script after consent is granted
   function enableClarityScript() {
     const clarityScript = document.createElement("script");
     clarityScript.src = "https://www.clarity.ms/tag/f4v1091lex";
@@ -130,8 +130,8 @@
 
   // Initialize the popup and block content on page load
   document.addEventListener("DOMContentLoaded", () => {
-    blockClarityScript(); 
-    blockContent(); 
-    createPopup(); 
+    blockClarityScript(); // Block Clarity immediately
+    blockContent(); // Block YouTube iframe
+    createPopup(); // Show consent popup
   });
 })();
