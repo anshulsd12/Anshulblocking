@@ -10,7 +10,7 @@
 
     // Function to enable the YouTube iframe dynamically
     function enableYouTubeVideo() {
-        const youtubeIframe = document.querySelector(".youtube-vid iframe");
+        const youtubeIframe = document.querySelector("iframe");
         if (youtubeIframe && youtubeIframe.dataset.src) {
             youtubeIframe.src = youtubeIframe.dataset.src; // Restores original src
         }
@@ -60,7 +60,7 @@
                         <input type="radio" name="youtube-consent" value="yes"> Yes I accept
                     </label>
                     <label>
-                        <input type="radio" name="youtube-consent" value="no" checked> No I don't
+                        <input type="radio" name="youtube-consent" value="no" checked> No I don't Accept
                     </label>
                 </div>
                 <!-- Consent for Clarity -->
