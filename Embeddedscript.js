@@ -16,6 +16,22 @@
         }
     }
 
+    // Function to block Clarity script loading
+    function blockClarityScript() {
+        const existingClarityScript = document.querySelector('script[src*="clarity.ms"]');
+        if (existingClarityScript) {
+            existingClarityScript.remove();
+        }
+    }
+
+    // Function to insert Clarity script once consent is granted
+    function enableClarityScript() {
+        const clarityScript = document.createElement("script");
+        clarityScript.src = "https://www.clarity.ms/tag/f4v1091lex";
+        clarityScript.async = true;
+        document.head.appendChild(clarityScript);
+    }
+
     // Function to create the Cookie Manager popup
     function createPopup() {
         const overlay = document.createElement("div");
@@ -41,12 +57,23 @@
                 <div style="margin-bottom: 15px;">
                     <p>YouTube Video:</p>
                     <label>
-                        <input type="radio" name="youtube-consent" value="yes"> Yes I accept
+                        <input type="radio" name="youtube-consent" value="yes"> Yes
                     </label>
                     <label>
                         <input type="radio" name="youtube-consent" value="no" checked> No
                     </label>
                 </div>
+                <!-- Consent for Clarity -->
+                <div style="margin-bottom: 15px;">
+                    <p>Clarity Analytics:</p>
+                    <label>
+                        <input type="radio" name="clarity-consent" value="yes"> Yes
+                    </label>
+                    <label>
+                        <input type="radio" name="clarity-consent" value="no" checked> No
+                    </label>
+                </div>
+            </div>
             <button id="save-consent" style="
                 padding: 10px 20px; margin-top: 20px;
                 background-color: #4CAF50; color: white; border: none;
@@ -62,11 +89,14 @@
     // Function to handle consent saving and applying
     function saveConsent() {
         const youtubeConsent = document.querySelector('input[name="youtube-consent"]:checked').value;
-       
+        const clarityConsent = document.querySelector('input[name="clarity-consent"]:checked').value;
+
         if (youtubeConsent === "yes") {
             enableYouTubeVideo();
         }
-       
+        if (clarityConsent === "yes") {
+            enableClarityScript();
+        }
 
         // Remove the popup after saving consent
         const overlay = document.getElementById("popup-overlay");
@@ -76,7 +106,7 @@
     // Initialize the popup and block content on page load
     document.addEventListener("DOMContentLoaded", () => {
         blockYouTubeVideo(); 
-        
+        blockClarityScript(); 
         createPopup(); 
     });
 })();
