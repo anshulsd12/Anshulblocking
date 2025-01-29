@@ -1,132 +1,73 @@
-(function () {
-  // List of cookies related to Clarity
-  const clarityCookies = ["_clck", "_clsk", "_cltk", "MUID", "CLID"];
+(function() {
+    // Check if consent is already granted
+    let consentGranted = localStorage.getItem('cookieConsent') === 'true';
 
-  // Function to block Clarity script loading until consent is granted
-  function blockClarityScript() {
-    const existingClarityScript = document.querySelector('script[src*="clarity.ms"]');
-    if (existingClarityScript) {
-      existingClarityScript.remove();
-    }
-  }
+    // Function to create and show the consent popup
+    function createConsentPopup() {
+        // Create a popup div and its content
+        const popup = document.createElement('div');
+        popup.id = 'cookie-consent-popup';
+        popup.style.position = 'fixed';
+        popup.style.top = '0';
+        popup.style.left = '0';
+        popup.style.right = '0';
+        popup.style.bottom = '0';
+        popup.style.backgroundColor = 'rgba(0, 0, 0, 0.8)';
+        popup.style.color = 'white';
+        popup.style.display = 'flex';
+        popup.style.alignItems = 'center';
+        popup.style.justifyContent = 'center';
+        popup.style.zIndex = '9999';
+        popup.style.fontFamily = 'Arial, sans-serif';
+        popup.style.fontSize = '18px';
+        popup.style.textAlign = 'center';
+        popup.style.padding = '20px';
+        popup.style.transition = 'opacity 0.3s ease';
 
-  // Function to insert Clarity script once consent is granted
-  function enableClarityScript() {
-    if (!document.querySelector('script[src*="clarity.ms"]')) {
-      const clarityScript = document.createElement("script");
-      clarityScript.src = "https://www.clarity.ms/tag/f4v1091lex";
-      clarityScript.async = true;
-      document.head.appendChild(clarityScript);
-    }
-  }
+        popup.innerHTML = `
+            <div style="max-width: 400px; padding: 20px; background: #333; border-radius: 10px;">
+                <h2 style="margin-bottom: 15px;">We use cookies to improve your experience.</h2>
+                <p style="margin-bottom: 20px;">Do you consent to allow YouTube videos to load and collect data?</p>
+                <div style="display: flex; justify-content: center; gap: 10px;">
+                    <button id="accept-cookie" style="padding: 10px 20px; background: #28a745; color: white; border: none; border-radius: 5px; cursor: pointer;">Accept</button>
+                    <button id="decline-cookie" style="padding: 10px 20px; background: #dc3545; color: white; border: none; border-radius: 5px; cursor: pointer;">Decline</button>
+                </div>
+            </div>
+        `;
+        document.body.appendChild(popup);
 
-  // Function to enable YouTube iframe dynamically
-  function enableYouTubeIframe() {
-    const youtubePlaceholder = document.getElementById("youtube-iframe-placeholder");
-    if (youtubePlaceholder) {
-      const youtubeIframe = document.createElement("iframe");
-      youtubeIframe.width = "560";
-      youtubeIframe.height = "315";
-      youtubeIframe.src = "https://www.youtube.com/embed/rYb4JNGShOM?si=K3yUbeStbhNIMYNJ";
-      youtubeIframe.title = "YouTube video player";
-      youtubeIframe.frameBorder = "0";
-      youtubeIframe.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture";
-      youtubeIframe.allowFullscreen = true;
-      youtubePlaceholder.replaceWith(youtubeIframe);
-    }
-  }
+        // Add event listeners to buttons
+        document.getElementById('accept-cookie').addEventListener('click', () => {
+            consentGranted = true;
+            localStorage.setItem('cookieConsent', 'true');
+            popup.style.opacity = '0';
+            setTimeout(() => popup.remove(), 300);
+            loadYouTubeVideos(); // Load YouTube if consent is granted
+        });
 
-  // Function to create the Cookie Manager popup
-  function createPopup() {
-    const overlay = document.createElement("div");
-    overlay.id = "popup-overlay";
-    overlay.style = `
-      position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-      background-color: rgba(0, 0, 0, 0.7); z-index: 1000; display: flex;
-      justify-content: center; align-items: center; color: #fff;
-      font-family: Arial, sans-serif;
-    `;
-
-    const popup = document.createElement("div");
-    popup.id = "popup";
-    popup.style = `
-      background-color: #333; padding: 20px; border-radius: 10px;
-      text-align: center; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-    `;
-    popup.innerHTML = `
-      <h2 style="margin-bottom: 10px;">Cookie Manager</h2>
-      <p>Manage your consent for the following content:</p>
-      <div style="margin-top: 20px; text-align: left;">
-        <!-- Consent for YouTube -->
-        <div style="margin-bottom: 15px;">
-          <p>YouTube Video:</p>
-          <label>
-            <input type="radio" name="youtube-consent" value="yes"> Yes
-          </label>
-          <label>
-            <input type="radio" name="youtube-consent" value="no" checked> No
-          </label>
-        </div>
-        <!-- Consent for Clarity -->
-        <div style="margin-bottom: 15px;">
-          <p>Clarity Analytics:</p>
-          <label>
-            <input type="radio" name="clarity-consent" value="yes"> Yes
-          </label>
-          <label>
-            <input type="radio" name="clarity-consent" value="no" checked> No
-          </label>
-        </div>
-      </div>
-      <button id="save-consent" style="
-        padding: 10px 20px; margin-top: 20px;
-        background-color: #4CAF50; color: white; border: none;
-        border-radius: 5px; cursor: pointer;
-      ">Save Consent</button>
-    `;
-    overlay.appendChild(popup);
-    document.body.appendChild(overlay);
-
-    document.getElementById("save-consent").addEventListener("click", saveConsent);
-  }
-
-  // Function to handle consent saving and applying
-  function saveConsent() {
-    const youtubeConsent = document.querySelector('input[name="youtube-consent"]:checked').value;
-    const clarityConsent = document.querySelector('input[name="clarity-consent"]:checked').value;
-
-    if (youtubeConsent === "yes") {
-      enableYouTubeIframe();
-    }
-    if (clarityConsent === "yes") {
-      enableClarityScript();
+        document.getElementById('decline-cookie').addEventListener('click', () => {
+            consentGranted = false;
+            localStorage.setItem('cookieConsent', 'false');
+            popup.style.opacity = '0';
+            setTimeout(() => popup.remove(), 300);
+        });
     }
 
-    // Remove the popup after saving consent
-    const overlay = document.getElementById("popup-overlay");
-    if (overlay) overlay.remove();
-  }
-
-  // Function to block content initially
-  function blockContent() {
-    // Replace YouTube iframe with a placeholder
-    const youtubeIframe = document.querySelector('iframe[src*="youtube.com"]');
-    if (youtubeIframe) {
-      const youtubePlaceholder = document.createElement("div");
-      youtubePlaceholder.id = "youtube-iframe-placeholder";
-      youtubePlaceholder.style = `
-        width: 560px; height: 315px; background: #f0f0f0;
-        text-align: center; line-height: 315px; color: #ccc;
-      `;
-      youtubePlaceholder.innerText = "YouTube Video Placeholder (Consent Required)";
-      youtubeIframe.replaceWith(youtubePlaceholder);
+    // Function to load YouTube videos if consent is granted
+    function loadYouTubeVideos() {
+        const youtubeFrames = document.querySelectorAll('.youtube-vid iframe');
+        youtubeFrames.forEach(frame => {
+            if (frame.dataset.src) {
+                frame.src = frame.dataset.src; // Set iframe src from data-src attribute
+            }
+        });
     }
-  }
 
-  // Initialize the popup and block content on page load
-  document.addEventListener("DOMContentLoaded", () => {
-    blockClarityScript(); // Block Clarity script immediately
-    blockContent(); // Block other content like YouTube iframe
-    createPopup(); // Create and display the consent popup
-  });
+    // If consent is not already granted, show the popup
+    if (!consentGranted) {
+        createConsentPopup();
+    } else {
+        // If consent is already granted, load YouTube videos
+        loadYouTubeVideos();
+    }
 })();
