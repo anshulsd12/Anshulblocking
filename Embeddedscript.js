@@ -4,7 +4,7 @@
         const youtubeIframe = document.querySelector(".youtube-vid iframe");
         if (youtubeIframe) {
             youtubeIframe.setAttribute("data-src", youtubeIframe.src);
-            youtubeIframe.src = "";
+            youtubeIframe.src = "";  // Prevents video from loading
         }
     }
 
@@ -12,7 +12,7 @@
     function enableYouTubeVideo() {
         const youtubeIframe = document.querySelector(".youtube-vid iframe");
         if (youtubeIframe && youtubeIframe.dataset.src) {
-            youtubeIframe.src = youtubeIframe.dataset.src;
+            youtubeIframe.src = youtubeIframe.dataset.src; // Restores original src
         }
     }
 
@@ -57,7 +57,7 @@
                 <div style="margin-bottom: 15px;">
                     <p>YouTube Video:</p>
                     <label>
-                        <input type="radio" name="youtube-consent" value="yes"> Yes
+                        <input type="radio" name="youtube-consent" value="yes"> Yes I accept
                     </label>
                     <label>
                         <input type="radio" name="youtube-consent" value="no" checked> No
@@ -103,10 +103,27 @@
         if (overlay) overlay.remove();
     }
 
-    // Initialize the popup and block content on page load
+    // Function to observe DOM changes and apply YouTube blocking after React renders
+    function observeYouTubeVideo() {
+        const observer = new MutationObserver((mutationsList, observer) => {
+            for (const mutation of mutationsList) {
+                if (mutation.type === "childList") {
+                    const youtubeIframe = document.querySelector(".youtube-vid iframe");
+                    if (youtubeIframe) {
+                        blockYouTubeVideo();
+                        observer.disconnect(); // Stop observing once the iframe is modified
+                    }
+                }
+            }
+        });
+
+        observer.observe(document.body, { childList: true, subtree: true });
+    }
+
+    // Initialize the popup, block content, and observe React-rendered elements
     document.addEventListener("DOMContentLoaded", () => {
-        blockYouTubeVideo(); 
-        blockClarityScript(); 
-        createPopup(); 
+        blockClarityScript();
+        createPopup();
+        observeYouTubeVideo(); // Ensure YouTube video gets blocked even if rendered after DOMContentLoaded
     });
 })();
