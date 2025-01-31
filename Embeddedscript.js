@@ -8,6 +8,11 @@
            categories: ['NECESSARY'],
            type: 'script'
        },
+      {
+           tag: 'https://id.rlcdn.com/464526.gif',
+           categories: ['MARKETING'],
+           type: 'img'
+       },
        {
            tag: 'https://www.googletagmanager.com/gtm.js?id=GTM-KS3M7CSF',
            categories: ['MARKETING'],
