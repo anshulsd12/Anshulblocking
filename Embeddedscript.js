@@ -14,6 +14,11 @@
            type: 'script'
        },
        {
+           tag: 'https://snap.licdn.com/li.lms-analytics/insight.min.js',
+           categories: ['MARKETING'],
+           type: 'script'
+       },
+       {
            tag: 'https://js.hsforms.net/forms/embed/v2.js',
            categories: ['MARKETING'],
            type: 'script'
