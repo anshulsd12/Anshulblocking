@@ -18,6 +18,11 @@
            categories: ['MARKETING'],
            type: 'script'
        },
+      {
+           tag: 'https://s.adroll.com/j/roundtrip.js',
+           categories: ['MARKETING'],
+           type: 'script'
+       },
        {
            tag: 'https://snap.licdn.com/li.lms-analytics/insight.min.js',
            categories: ['MARKETING'],
